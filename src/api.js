@@ -1,9 +1,9 @@
 //request 함수
 //실습 서버에서 정렬한 데이터 받아오기
-export async function getReviews(order = 'createAt') {
-  const query = `order=${order}`
+export async function getReviews({ order = 'createAt', offset = 0, limit = 6 }) {
+  const query = `order=${order}&offset=${offset}&limit=${limit}`;
   const response = await fetch(
-    `https://learn.codeit.kr/api/film-reviews?${query}`
+    `https://learn.codeit.kr/1999/film-reviews?${query}`
   );
   const body = await response.json();
   return body;
