@@ -1,5 +1,4 @@
 import ReviewList from "./ReviewList";
-import mockItems from '../mock.json';
 import { useEffect, useState } from "react";
 import { getReviews } from '../api';
 
@@ -7,9 +6,11 @@ const LIMIT = 6; //고정된 limit 사용
 
 function App() {
   const [order, setOrder] = useState('createdAt'); //아이템 정렬 state
-  const [items, setItems] = useState(mockItems);   //아이템 state
+  const [items, setItems] = useState([]);          //아이템 state
   const [offset, setOffset] = useState(0);         //offset(페이지네이션) state
   const [hasNext, setHasNext] = useState(false);   //불러올 데이터 state
+  const [isLoading, setIsLoading] = useState(false);      //로딩 state
+  const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -23,7 +24,19 @@ function App() {
   };
 
   const handleLoad = async (options) => {  //영화 아이템 로드
-    const { reviews, paging } = await getReviews(options);
+    let result;
+    try {
+      setLoadingError(null);
+      setIsLoading(true);     //로딩중
+      result = await getReviews(options);
+    } catch (error) {
+      setLoadingError(error);
+      return;
+    } finally {
+      setIsLoading(false);    //로딩완료
+    }
+
+    const { reviews, paging } = result;
 
     //offset(오프셋) 페이지네이션
     if (options.offset === 0) { //더보기로 불러온 데이터가 없으면
@@ -49,7 +62,8 @@ function App() {
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleBestClick}>베스트순</button>
       <ReviewList items={sortedItems} onDelete={handleDelete} />
-      {(offset < 43) && <button disabled={!hasNext} onClick={handleLoadMore}>더보기</button>}
+      {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
+      {loadingError?.message && <span>{loadingError.message}</span>}
     </div>
   );
 }

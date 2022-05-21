@@ -5,6 +5,9 @@ export async function getReviews({ order = 'createAt', offset = 0, limit = 6 }) 
   const response = await fetch(
     `https://learn.codeit.kr/1999/film-reviews?${query}`
   );
+  if (!response.ok) { //에러가 발생할 경우
+    throw new Error('데이터를 불러오는데 실패했습니다.');
+  }
   const body = await response.json();
   return body;
 }
