@@ -1,4 +1,5 @@
 import { useState } from "react";
+import FileInput from "./FileInput";
 import './ReviewForm.css';
 
 function ReviewForm() {
@@ -7,14 +8,20 @@ function ReviewForm() {
     title: '',
     rating: 0,
     content: '',
+    imgFile: null,
   });
 
-  const handleChange = (e) => { //onChange
-    const { name, value } = e.target;
+  const handleChange = (name, value) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: value,  //name의 값으로 프로퍼티 명을 지정하고, 해당하는 값을 지정할 수 있음
     }));
+
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    handleChange(name, value);
   };
 
   const handleSubmit = (e) => { //onSubmit
@@ -24,9 +31,10 @@ function ReviewForm() {
 
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
-      <input name="title" value={values.title} onChange={handleChange}></input>
-      <input type="number" name="rating" value={values.rating} onChange={handleChange}></input>
-      <textarea name="content" value={values.content} onChange={handleChange}></textarea>
+      <FileInput name="imgFile" value={values.imgFile} onChange={handleChange} />
+      <input name="title" value={values.title} onChange={handleInputChange}></input>
+      <input type="number" name="rating" value={values.rating} onChange={handleInputChange}></input>
+      <textarea name="content" value={values.content} onChange={handleInputChange}></textarea>
       <button type="submit">확인</button>
     </form>
   );
