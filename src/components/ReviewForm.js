@@ -14,7 +14,7 @@ function ReviewForm() {
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: value,  //name의 값으로 프로퍼티 명을 지정하고, 해당하는 값을 지정할 수 있음
+      [name]: value,  //name으로 프로퍼티 명을 지정, value로 해당하는 값을 지정
     }));
 
   };
