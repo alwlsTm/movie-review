@@ -1,11 +1,12 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(value prop 사용X)
+  const [preview, setPreview] = useState(); //이미지 파일 주소 state
   const inputRef = useRef();  //ref 객체(실제 DOM 노드 참조)
 
   const handleChange = (e) => {
     const nextValue = e.target.files[0];  //file[0] - 선택한 이미지 파일의 객체
-    onChange(name, nextValue);
+    onChange(name, nextValue);  //imgFile:null
   };
 
   const handleClearClick = () => {  //초기화
@@ -15,8 +16,16 @@ function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(
     onChange(name, null); //imgFile: null
   };
 
+  useEffect(() => {
+    if (!value) return;
+
+    const nextPreview = URL.createObjectURL(value);  //이미지 파일 오브젝트 url 생성(리턴해 주는 문자열을 해당 파일의 주소처럼 사용 "blob: ~")
+    setPreview(nextPreview);
+  }, [value]);  //이미지 파일을 선택할 때마다 미리보기 주소를 바꿈
+
   return (
     <div>
+      <img src={preview} alt="이미지 미리보기"></img>
       <input type="file" onChange={handleChange} ref={inputRef}></input>
       {value && <button onClick={handleClearClick}>X</button>}
     </div>
