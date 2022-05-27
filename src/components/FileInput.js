@@ -21,12 +21,17 @@ function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(
 
     const nextPreview = URL.createObjectURL(value);  //이미지 파일 오브젝트 url 생성(리턴해 주는 문자열을 해당 파일의 주소처럼 사용 "blob: ~")
     setPreview(nextPreview);
+
+    return () => { //정리
+      setPreview();
+      URL.revokeObjectURL(nextPreview); //오브젝트 url 해제(메모리 할당 해제)
+    }
   }, [value]);  //이미지 파일을 선택할 때마다 미리보기 주소를 바꿈
 
   return (
     <div>
       <img src={preview} alt="이미지 미리보기"></img>
-      <input type="file" onChange={handleChange} ref={inputRef}></input>
+      <input type="file" accept="image/png, image/jpeg" onChange={handleChange} ref={inputRef}></input>
       {value && <button onClick={handleClearClick}>X</button>}
     </div>
   );
