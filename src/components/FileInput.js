@@ -31,7 +31,11 @@ function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(
   return (
     <div>
       <img src={preview} alt="이미지 미리보기"></img>
-      <input type="file" accept="image/png, image/jpeg" onChange={handleChange} ref={inputRef}></input>
+      <input
+        type="file"
+        accept="image/png, image/jpeg"
+        onChange={handleChange}
+        ref={inputRef}></input>
       {value && <button onClick={handleClearClick}>X</button>}
     </div>
   );
