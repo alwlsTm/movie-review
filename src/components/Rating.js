@@ -29,7 +29,7 @@ function Star({ selected = false, rating, onSelect, onHover }) {
 //onMouseOut - 마우스가 영역을 벗어났을 때 실행
 function Rating({ className, value = 0, onSelect, onHover, onMouseOut }) {
   return (
-    <div className={className} onMouseout={onMouseOut}>
+    <div className={className} onMouseOut={onMouseOut}>
       {RATING.map((rating) => (
         <Star
           key={rating}
