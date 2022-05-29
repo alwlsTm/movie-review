@@ -54,6 +54,12 @@ function App() {
     handleLoad({ order, offset, limit: LIMIT }); //첫 더보기 클릭 시 - order, offset: 6, limit: 6
   };
 
+  //리퀘스트 이후에 비동기로 실행되는 함수
+  //새로 만들어진 리뷰를 받아서 items에 바로 적용
+  const handleSubmitSuccess = (review) => {
+    setItems((prevItems) => [review, ...prevItems]);
+  }
+
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
   }, [order]);  //order가 바뀌었을 경우 request를 보냄
@@ -62,7 +68,7 @@ function App() {
     <div>
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleBestClick}>베스트순</button>
-      <ReviewForm />
+      <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
       <ReviewList items={sortedItems} onDelete={handleDelete} />
       {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
       {loadingError?.message && <span>{loadingError.message}</span>}
