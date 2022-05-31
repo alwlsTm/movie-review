@@ -26,7 +26,7 @@ export async function createReview(formData) {
   }
   );
   if (!response.ok) {
-    throw new Error('리뷰를 생성하는데 실패했습니다.');
+    throw new Error('데이터를 생성하는데 실패했습니다.');
   }
   const body = await response.json();
   return body;

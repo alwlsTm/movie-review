@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(value prop 사용X)
-  const [preview, setPreview] = useState(); //이미지 파일 주소 state
+function FileInput({ name, value, initialPreview, onChange }) { //file - 비제어 컴포넌트(value prop 사용X)
+  const [preview, setPreview] = useState(initialPreview); //이미지 파일 주소 state
   const inputRef = useRef();  //ref 객체(실제 DOM 노드 참조)
 
   const handleChange = (e) => {
@@ -23,10 +23,10 @@ function FileInput({ name, value, onChange }) { //file - 비제어 컴포넌트(
     setPreview(nextPreview);
 
     return () => { //정리
-      setPreview();
+      setPreview(initialPreview); //수정 중에 이미지 파일 보여주기 & 다른 이미지로 변경했다가 지울 경우 다시 원래의 이미지를 보여줌
       URL.revokeObjectURL(nextPreview); //오브젝트 url 해제(메모리 할당 해제)
     }
-  }, [value]);  //이미지 파일을 선택할 때마다 미리보기 주소를 바꿈
+  }, [value, initialPreview]);  //이미지 파일을 선택할 때마다 미리보기 주소를 바꿈
 
   return (
     <div>

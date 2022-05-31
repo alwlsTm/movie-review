@@ -12,8 +12,8 @@ const INITIAL_VALUES = {  //하나의 state로 관리
   imgFile: null,
 }
 
-function ReviewForm({ onSubmitSuccess }) {
-  const [values, setValues] = useState(INITIAL_VALUES);
+function ReviewForm({ initialValues = INITIAL_VALUES, initialPreview, onSubmitSuccess, onCancel }) {
+  const [values, setValues] = useState(initialValues);  //values state(하나의 state로 관리)
   const [isSubmitting, setIsSubmitting] = useState(false);      //submit 로딩 state
   const [submittingError, setSubmittingError] = useState(null); //submit 에러 state
 
@@ -56,10 +56,20 @@ function ReviewForm({ onSubmitSuccess }) {
 
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
-      <FileInput name="imgFile" value={values.imgFile} onChange={handleChange} />
+      <FileInput
+        name="imgFile"
+        value={values.imgFile}
+        initialPreview={initialPreview}
+        onChange={handleChange}
+      />
       <input name="title" value={values.title} onChange={handleInputChange}></input>
-      <RatingInput name="rating" value={values.rating} onChange={handleChange} />
+      <RatingInput
+        name="rating"
+        value={values.rating}
+        onChange={handleChange}
+      />
       <textarea name="content" value={values.content} onChange={handleInputChange}></textarea>
+      {onCancel && <button onClick={onCancel}>취소</button>}
       <button type="submit" disabled={isSubmitting}>확인</button>
       {submittingError?.message && <div>{submittingError.message}</div>}
     </form>
