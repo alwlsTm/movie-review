@@ -32,6 +32,22 @@ export async function createReview(formData) {
   return body;
 }
 
+//PUT
+//영화 리뷰 수정 
+export async function updateReview(id, formData) {  //id값을 이용해서 수정할 글을 서버에 알려줌
+  const response = await fetch(
+    `${BASE_URL}/film-reviews/${id}`, {
+    method: 'PUT',
+    body: formData,
+  }
+  );
+  if (!response.ok) {
+    throw new Error('데이터를 수정하는데 실패했습니다.');
+  }
+  const body = await response.json();
+  return body;
+}
+
 /*
 
   ▼paging: {count: 43, hasNext: true}

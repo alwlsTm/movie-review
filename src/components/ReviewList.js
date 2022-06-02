@@ -32,7 +32,7 @@ function ReviewListItem({ item, onDelete, onEdit }) {
 }
 
 //영화 리스트
-function ReviewList({ items, onDelete }) {
+function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
   const [editingId, setEditingId] = useState(null); //수정 중인 글의 id state
 
   const handleCancel = () => setEditingId(null);  //글 수정 취소
@@ -41,14 +41,24 @@ function ReviewList({ items, onDelete }) {
     <ul className='ReviewList'>
       {items.map((item) => {
         if (item.id === editingId) {  //item.id 가 editingId일 경우 ReviewForm을 렌더링
-          const { imgUrl, title, rating, content } = item;
+          const { id, imgUrl, title, rating, content } = item;
           const initialValues = { title, rating, content };
+
+          const handleSubmit = (formData) => onUpdate(id, formData);  //글 수정 
+
+          const handleSubmitSuccess = (review) => { //글 수정 완료
+            onUpdateSuccess(review);
+            setEditingId(null); //입력폼 닫기
+          };
+
           return (
             <li key={item.id}>
               <ReviewForm
-                initialValues={initialValues}
-                initialPreview={imgUrl}
-                onCancel={handleCancel}
+                initialValues={initialValues} //수정중인 글의 기본값
+                initialPreview={imgUrl} //수정중인 글의 이미지 미리보기
+                onCancel={handleCancel} //글 수정 취소
+                onSubmit={handleSubmit} //글 수정
+                onSubmitSuccess={handleSubmitSuccess} //글 수정 완료
               />
             </li>
           );

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { getReviews } from '../api';
+import { createReview, getReviews, updateReview } from '../api';
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 
 const LIMIT = 6; //고정된 limit 사용
 
+//글 불러오기 & 작성 & 수정
 function App() {
+  const [items, setItems] = useState([]);          //영화 아이템 state
   const [order, setOrder] = useState('createdAt'); //아이템 정렬 state
-  const [items, setItems] = useState([]);          //아이템 state
   const [offset, setOffset] = useState(0);         //offset(페이지네이션) state
   const [hasNext, setHasNext] = useState(false);   //불러올 데이터 state
   const [isLoading, setIsLoading] = useState(false);      //로딩 state
@@ -56,9 +57,21 @@ function App() {
 
   //리퀘스트 이후에 비동기로 실행되는 함수
   //새로 만들어진 리뷰를 받아서 items에 바로 적용
-  const handleSubmitSuccess = (review) => {
+  const handleCreateSuccess = (review) => {
     setItems((prevItems) => [review, ...prevItems]);
   }
+
+  //리뷰를 수정 후 리스폰스로 받은 데이터 반영
+  const handleUpdateSuccess = (review) => {
+    setItems((prevItems) => {
+      const splitIdx = prevItems.findIndex((item) => item.id === review.id);  //수정할 item index 찾기
+      return [
+        ...prevItems.splice(0, splitIdx),  //앞 요소
+        review, //수정한 리뷰
+        ...prevItems.splice(splitIdx + 1), //뒷 요소
+      ];
+    });
+  };
 
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
@@ -68,8 +81,13 @@ function App() {
     <div>
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleBestClick}>베스트순</button>
-      <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
-      <ReviewList items={sortedItems} onDelete={handleDelete} />
+      <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
+      <ReviewList
+        items={sortedItems}
+        onDelete={handleDelete}
+        onUpdate={updateReview}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
       {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
       {loadingError?.message && <span>{loadingError.message}</span>}
     </div>
