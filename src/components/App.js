@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { createReview, getReviews, updateReview } from '../api';
+import { createReview, deleteReview, getReviews, updateReview } from '../api';
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 
 const LIMIT = 6; //고정된 limit 사용
 
-//글 불러오기 & 작성 & 수정
+//글 불러오기 & 작성 & 수정 & 삭제
 function App() {
   const [items, setItems] = useState([]);          //영화 아이템 state
   const [order, setOrder] = useState('createdAt'); //아이템 정렬 state
@@ -20,9 +20,11 @@ function App() {
 
   const handleBestClick = () => setOrder('rating');       //베스트순
 
-  const handleDelete = (id) => {  //아이템 삭제
-    const nextItem = items.filter((item) => item.id !== id);  //아이템의 id를 이용해 필터링
-    setItems(nextItem);
+  const handleDelete = async (id) => {  //아이템 삭제
+    const result = await deleteReview(id);
+    if (!result) return;
+
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));  //아이템의 id를 이용해 필터링
   };
 
   const handleLoad = async (options) => {  //영화 아이템 로드
