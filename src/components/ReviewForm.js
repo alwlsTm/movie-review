@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useAsync from "../hooks/useAsync";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import './ReviewForm.css';
@@ -19,8 +20,7 @@ function ReviewForm({
   onCancel,  //수정중인 글 취소
 }) {
   const [values, setValues] = useState(initialValues);  //values state(하나의 state로 관리)
-  const [isSubmitting, setIsSubmitting] = useState(false);      //submit 로딩 state
-  const [submittingError, setSubmittingError] = useState(null); //submit 에러 state
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -43,17 +43,9 @@ function ReviewForm({
     formData.append('content', values.content);
     formData.append('imgFile', values.imgFile);
 
-    let result;
-    try {
-      setSubmittingError(null);
-      setIsSubmitting(true);  //submit중..
-      result = await onSubmit(formData); //리뷰 작성 & 수정 리퀘스트
-    } catch (error) {
-      setSubmittingError(error);
-      return;
-    } finally {
-      setIsSubmitting(false); //submit 완료!
-    }
+    const result = await onSubmitAsync(formData);
+    if (!result) return;
+
     const { review } = result;  //리스폰스 된 아이템
     onSubmitSuccess(review);
     setValues(INITIAL_VALUES);  //리퀘스트가 끝나면 폼 초기화

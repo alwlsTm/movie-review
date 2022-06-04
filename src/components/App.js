@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
+import useAsync from "../hooks/useAsync";
 
 const LIMIT = 6; //고정된 limit 사용
 
@@ -11,8 +12,7 @@ function App() {
   const [order, setOrder] = useState('createdAt'); //아이템 정렬 state
   const [offset, setOffset] = useState(0);         //offset(페이지네이션) state
   const [hasNext, setHasNext] = useState(false);   //불러올 데이터 state
-  const [isLoading, setIsLoading] = useState(false);      //로딩 state
-  const [loadingError, setLoadingError] = useState(null); //로딩 에러 state
+  const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -27,18 +27,9 @@ function App() {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));  //아이템의 id를 이용해 필터링
   };
 
-  const handleLoad = async (options) => {  //영화 아이템 로드
-    let result;
-    try {
-      setLoadingError(null);
-      setIsLoading(true);     //로딩중
-      result = await getReviews(options);
-    } catch (error) {
-      setLoadingError(error);
-      return;
-    } finally {
-      setIsLoading(false);    //로딩완료
-    }
+  const handleLoad = useCallback(async (options) => {  //영화 아이템 로드
+    const result = await getReviewsAsync(options);
+    if (!result) return;
 
     const { reviews, paging } = result;
 
@@ -50,7 +41,7 @@ function App() {
     }
     setOffset(options.offset + reviews.length);
     setHasNext(paging.hasNext);
-  };
+  }, [getReviewsAsync]);
 
   //더보기(다음 페이지 불러오기)
   const handleLoadMore = () => {
@@ -77,7 +68,7 @@ function App() {
 
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
-  }, [order]);  //order가 바뀌었을 경우 request를 보냄
+  }, [order, handleLoad]);  //order가 바뀌었을 경우 request를 보냄
 
   return (
     <div>
