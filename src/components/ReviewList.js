@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react';
-import LocaleContext from '../contexts/LocaleContext';
+import { useState } from 'react';
+import { useLocale } from '../contexts/LocaleContext';
 import Rating from './Rating';
 import ReviewForm from './ReviewForm';
 import './ReviewList.css';
@@ -13,7 +13,7 @@ function formatDate(value) {
 
 //영화 리스트 아이템
 function ReviewListItem({ item, onDelete, onEdit }) {
-  const locale = useContext(LocaleContext); //context 값 가져오기
+  const locale = useLocale(); //context 값 가져오기
 
   const handleDeleteClick = () => onDelete(item.id);
 

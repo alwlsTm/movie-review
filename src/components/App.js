@@ -3,7 +3,7 @@ import { createReview, deleteReview, getReviews, updateReview } from '../api';
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 import useAsync from "../hooks/useAsync";
-import LocaleContext from "../contexts/LocaleContext";
+import { LocaleProvider } from "../contexts/LocaleContext";
 import LocaleSelect from "./LocaleSelect";
 
 const LIMIT = 6; //고정된 limit 사용
@@ -15,7 +15,6 @@ function App() {
   const [offset, setOffset] = useState(0);         //offset(페이지네이션) state
   const [hasNext, setHasNext] = useState(false);   //불러올 데이터 state
   const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
-  const [locale, setLocale] = useState('ko');      //locale state
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -74,9 +73,9 @@ function App() {
   }, [order, handleLoad]);  //order가 바뀌었을 경우 request를 보냄
 
   return (
-    <LocaleContext.Provider value={locale}>
+    <LocaleProvider defaultValue={'ko'}>
       <div>
-        <LocaleSelect value={locale} onChange={setLocale} />
+        <LocaleSelect />
         <div>
           <button onClick={handleNewestClick}>최신순</button>
           <button onClick={handleBestClick}>베스트순</button>
@@ -91,7 +90,7 @@ function App() {
         {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
         {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
-    </LocaleContext.Provider>
+    </LocaleProvider>
   );
 }
 
