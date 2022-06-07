@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useAsync from "../hooks/useAsync";
+import useTranslate from "../hooks/useTranslate";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import './ReviewForm.css';
@@ -21,6 +22,7 @@ function ReviewForm({
 }) {
   const [values, setValues] = useState(initialValues);  //values state(하나의 state로 관리)
   const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
+  const t = useTranslate(); //다국어 번역 함수(커스텀 훅) 가져오기
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -66,8 +68,8 @@ function ReviewForm({
         onChange={handleChange}
       />
       <textarea name="content" value={values.content} onChange={handleInputChange}></textarea>
-      {onCancel && <button onClick={onCancel}>취소</button>}
-      <button type="submit" disabled={isSubmitting}>확인</button>
+      {onCancel && <button onClick={onCancel}>{t('cancel button')}</button>}
+      <button type="submit" disabled={isSubmitting}>{t('confirm button')}</button>
       {submittingError?.message && <div>{submittingError.message}</div>}
     </form>
   );
