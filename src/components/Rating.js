@@ -19,7 +19,9 @@ function Star({ selected = false, rating, onSelect, onHover }) {
       className={className}
       onClick={handleClick}
       onMouseOver={handleMouseOver}
-    >*</span>
+    >
+      ★
+    </span>
   );
 }
 

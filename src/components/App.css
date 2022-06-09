@@ -1,0 +1,77 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #fbfbfd;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.App .App-nav,
+.App .App-footer {
+  flex: none;
+}
+
+.App .App-container {
+  flex: 1 1;
+}
+
+.App-nav {
+  height: 65px;
+  background-color: #fff;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.App-nav-container,
+.App-container,
+.App-footer-container {
+  width: 100%;
+  max-width: 860px;
+  margin: auto;
+}
+
+.App-nav-container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.App-logo {
+  margin-top: -5px;
+}
+
+.App-container {
+  padding: 50px 21px;
+}
+
+.App-ReviewForm {
+  padding: 30px 32px 30px 30px;
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 11px rgba(105, 105, 105, 0.2));
+  border-radius: 5px;
+}
+
+.App input,
+.App textarea {
+  padding: 15px 20px;
+  border: solid 1px #f9f9f9;
+  border-radius: 6px;
+  outline: none;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  font-family: sans-serif;
+}
+
+.App input:focus,
+.App textarea:focus {
+  border: solid 1px #d1d1d1;
+}

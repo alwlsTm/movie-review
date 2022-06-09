@@ -22,7 +22,7 @@ function ReviewForm({
 }) {
   const [values, setValues] = useState(initialValues);  //values state(하나의 state로 관리)
   const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
-  const t = useTranslate(); //다국어 번역 함수(커스텀 훅) 가져오기
+  const t = useTranslate(); //다국어 번역 함수 가져오기(커스텀 훅)
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -56,21 +56,55 @@ function ReviewForm({
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
       <FileInput
+        className="ReviewForm-preview"
         name="imgFile"
         value={values.imgFile}
         initialPreview={initialPreview}
         onChange={handleChange}
       />
-      <input name="title" value={values.title} onChange={handleInputChange}></input>
-      <RatingInput
-        name="rating"
-        value={values.rating}
-        onChange={handleChange}
-      />
-      <textarea name="content" value={values.content} onChange={handleInputChange}></textarea>
-      {onCancel && <button onClick={onCancel}>{t('cancel button')}</button>}
-      <button type="submit" disabled={isSubmitting}>{t('confirm button')}</button>
-      {submittingError?.message && <div>{submittingError.message}</div>}
+      <div className="ReviewForm-rows">
+        <div className="ReviewForm-title-rating">
+          <input
+            className="ReviewForm-title"
+            name="title"
+            value={values.title}
+            placeholder={t('title placeholder')}
+            onChange={handleInputChange}
+          ></input>
+          <RatingInput
+            className="ReviewForm-rating"
+            name="rating"
+            value={values.rating}
+            onChange={handleChange}
+          />
+        </div>
+        <textarea
+          className="ReviewForm-content"
+          name="content"
+          value={values.content}
+          placeholder={t('content placeholder')}
+          onChange={handleInputChange}>
+        </textarea>
+        <div className="ReviewForm-error-buttons">
+          <div className="ReviewForm-error">
+            {submittingError?.message && <div>{submittingError.message}</div>}
+          </div>
+          <div className="ReviewForm-buttons">
+            {onCancel && (
+              <button className="ReviewForm-cancel-button" onClick={onCancel}>
+                {t('cancel button')}
+              </button>
+            )}
+            <button
+              className="ReviewForm-submit-button"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {t('confirm button')}
+            </button>
+          </div>
+        </div>
+      </div>
     </form>
   );
 }

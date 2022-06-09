@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import placeHolderImg from '../IMGS/preview-placeholder.png';
+import resetImg from '../IMGS/ic-reset.png';
+import './FileInput.css';
 
 function FileInput({ name, value, initialPreview, onChange }) { //file - 비제어 컴포넌트(value prop 사용X)
   const [preview, setPreview] = useState(initialPreview); //이미지 파일 주소 state
@@ -29,14 +32,24 @@ function FileInput({ name, value, initialPreview, onChange }) { //file - 비제�
   }, [value, initialPreview]);  //이미지 파일을 선택할 때마다 미리보기 주소를 바꿈
 
   return (
-    <div>
-      <img src={preview} alt="이미지 미리보기"></img>
+    <div className="FileInput">
+      <img
+        className={`FileInput-preview ${preview ? 'selected' : ''}`}
+        src={preview || placeHolderImg}
+        alt="이미지 미리보기"
+      ></img>
       <input
+        className="FileInput-hidden-overlay"
         type="file"
         accept="image/png, image/jpeg"
         onChange={handleChange}
-        ref={inputRef}></input>
-      {value && <button onClick={handleClearClick}>X</button>}
+        ref={inputRef}
+      ></input>
+      {value && (
+        <button className="FileInput-clear-button" onClick={handleClearClick}>
+          <img src={resetImg} alt="선택해제"></img>
+        </button>
+      )}
     </div>
   );
 }

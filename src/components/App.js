@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
+import { LocaleProvider } from "../contexts/LocaleContext";
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 import useAsync from "../hooks/useAsync";
-import { LocaleProvider } from "../contexts/LocaleContext";
 import LocaleSelect from "./LocaleSelect";
+import './App.css';
+import logoImg from '../IMGS/logo.png';
+import ticketImg from '../IMGS/ticket.png';
 
 const LIMIT = 6; //고정된 limit 사용
 
@@ -74,22 +77,37 @@ function App() {
 
   return (
     <LocaleProvider defaultValue={'ko'}>
-      <div>
-        <LocaleSelect />
-        <div>
-          <button onClick={handleNewestClick}>최신순</button>
-          <button onClick={handleBestClick}>베스트순</button>
+      <div className="App">
+        <nav className="App-nav">
+          <div className="App-nav-container">
+            <img className="App-logo" src={logoImg} alt="MOVIEPEDIA"></img>
+            <LocaleSelect />
+          </div>
+        </nav>
+        <div className="App-container">
+          <div
+            className="App-ReviewForm"
+            style={{ backgroundImage: `url("${ticketImg}")` }}
+          >
+            <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
+          </div>
+          <div>
+            <button onClick={handleNewestClick}>최신순</button>
+            <button onClick={handleBestClick}>베스트순</button>
+          </div>
+          <ReviewList
+            items={sortedItems}
+            onDelete={handleDelete}
+            onUpdate={updateReview}
+            onUpdateSuccess={handleUpdateSuccess}
+          />
+          {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
+          {loadingError?.message && <span>{loadingError.message}</span>}
         </div>
-        <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
-        <ReviewList
-          items={sortedItems}
-          onDelete={handleDelete}
-          onUpdate={updateReview}
-          onUpdateSuccess={handleUpdateSuccess}
-        />
-        {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
-        {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
+      <footer className="App-footer">
+
+      </footer>
     </LocaleProvider>
   );
 }
