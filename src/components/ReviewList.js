@@ -22,13 +22,26 @@ function ReviewListItem({ item, onDelete, onEdit }) {
   return (
     <div className='ReviewListItem'>
       <img className='ReviewListItem-img' src={item.imgUrl} alt={item.title}></img>
-      <div>
-        <h1>{item.title}</h1>
-        <Rating value={item.rating} />
-        <p>{formatDate(item.createdAt)}</p>
-        <p>{item.content}</p>
-        <button onClick={handleEditClick}>{t('edit button')}</button>
-        <button onClick={handleDeleteClick}>{t('delete button')}</button>
+      <div className='ReviewListItem-rows'>
+        <h1 className='ReviewListItem-title'>{item.title}</h1>
+        <Rating className="ReviewListItem-rating" value={item.rating} />
+        <p className="ReviewListItem-date">{formatDate(item.createdAt)}</p>
+        <p className="ReviewListItem-content">{item.content}</p>
+        <div className="ReviewListItem-buttons">
+          <button
+            className="ReviewListItem-edit-button"
+            onClick={handleEditClick}
+          >
+            {t('edit button')}
+          </button>
+          <button
+            className="ReviewListItem-delete-button"
+            onClick={handleDeleteClick}
+          >
+            {t('delete button')}
+          </button>
+        </div>
+
       </div>
     </div>
   );
@@ -68,7 +81,11 @@ function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
         }
         return (
           <li key={item.id}>
-            <ReviewListItem item={item} onDelete={onDelete} onEdit={setEditingId} />
+            <ReviewListItem
+              item={item}
+              onDelete={onDelete}
+              onEdit={setEditingId}
+            />
           </li>
         );
       })}

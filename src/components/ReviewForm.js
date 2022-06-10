@@ -49,8 +49,8 @@ function ReviewForm({
     if (!result) return;
 
     const { review } = result;  //리스폰스 된 아이템
-    onSubmitSuccess(review);
     setValues(INITIAL_VALUES);  //리퀘스트가 끝나면 폼 초기화
+    onSubmitSuccess(review);
   }
 
   return (

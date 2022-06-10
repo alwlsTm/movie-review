@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
-import { LocaleProvider } from "../contexts/LocaleContext";
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
 import useAsync from "../hooks/useAsync";
@@ -8,8 +7,21 @@ import LocaleSelect from "./LocaleSelect";
 import './App.css';
 import logoImg from '../IMGS/logo.png';
 import ticketImg from '../IMGS/ticket.png';
+import useTranslate from "../hooks/useTranslate";
 
 const LIMIT = 6; //고정된 limit 사용
+
+function AppSortButton({ selected, children, onClick }) {
+  return (
+    <button
+      disabled={selected}
+      className={`AppSortButton ${selected ? 'selected' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
 
 //글 불러오기 & 작성 & 수정 & 삭제
 function App() {
@@ -18,6 +30,7 @@ function App() {
   const [offset, setOffset] = useState(0);         //offset(페이지네이션) state
   const [hasNext, setHasNext] = useState(false);   //불러올 데이터 state
   const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
+  const t = useTranslate(); //다국어 번역 함수 불러오기(커스텀 훅)
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);  //아이템 정렬(내림차순)
 
@@ -73,42 +86,64 @@ function App() {
 
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
-  }, [order, handleLoad]);  //order가 바뀌었을 경우 request를 보냄
+  }, [order, handleLoad]);  //order가 바뀌었을 경우 request를 보냄(handleLoad 고정)
 
   return (
-    <LocaleProvider defaultValue={'ko'}>
-      <div className="App">
-        <nav className="App-nav">
-          <div className="App-nav-container">
-            <img className="App-logo" src={logoImg} alt="MOVIEPEDIA"></img>
-            <LocaleSelect />
-          </div>
-        </nav>
-        <div className="App-container">
-          <div
-            className="App-ReviewForm"
-            style={{ backgroundImage: `url("${ticketImg}")` }}
+    <div className="App">
+      <nav className="App-nav">
+        <div className="App-nav-container">
+          <img className="App-logo" src={logoImg} alt="MOVIEPEDIA"></img>
+          <LocaleSelect />
+        </div>
+      </nav>
+      <div className="App-container">
+        <div
+          className="App-ReviewForm"
+          style={{ backgroundImage: `url("${ticketImg}")` }}
+        >
+          <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
+        </div>
+        <div className="App-sorts">
+          <AppSortButton
+            selected={order === 'createdAt'}  //최신순
+            onClick={handleNewestClick}
           >
-            <ReviewForm onSubmit={createReview} onSubmitSuccess={handleCreateSuccess} />
-          </div>
-          <div>
-            <button onClick={handleNewestClick}>최신순</button>
-            <button onClick={handleBestClick}>베스트순</button>
-          </div>
+            {t('newest')}
+          </AppSortButton>
+          <AppSortButton
+            selected={order === 'rating'} //별점순
+            onClick={handleBestClick}
+          >
+            {t('best')}
+          </AppSortButton>
+        </div>
+        <div className="App-ReviewList">
           <ReviewList
             items={sortedItems}
             onDelete={handleDelete}
             onUpdate={updateReview}
             onUpdateSuccess={handleUpdateSuccess}
           />
-          {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
+          {hasNext ? (
+            <button
+              className="App-load-more-button"
+              disabled={isLoading}
+              onClick={handleLoadMore} //더보기
+            >
+              {t('load more')}
+            </button>
+          ) : (
+            <div className="App-load-more-button"></div>
+          )}
           {loadingError?.message && <span>{loadingError.message}</span>}
         </div>
       </div>
       <footer className="App-footer">
-
+        <div className="App-footer-container">
+          {t('term of service')} | {t('privacy policy')}
+        </div>
       </footer>
-    </LocaleProvider>
+    </div>
   );
 }
 
